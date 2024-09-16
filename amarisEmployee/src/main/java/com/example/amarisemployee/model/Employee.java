@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class Employee {
 
-
     private int id;
     @JsonProperty("employee_name")
     private String name;

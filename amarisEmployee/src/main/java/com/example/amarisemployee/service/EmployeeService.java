@@ -1,16 +1,16 @@
 package com.example.amarisemployee.service;
 
+import com.example.amarisemployee.exception.EmployeeNotFoundException;
+import com.example.amarisemployee.exception.ExternalServiceException;
 import com.example.amarisemployee.model.Employee;
 import com.example.amarisemployee.model.EmployeeDTO;
 import com.example.amarisemployee.model.EmployeeListResponse;
 import com.example.amarisemployee.model.EmployeeResponse;
 import com.example.amarisemployee.utilities.Constants;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,9 +33,9 @@ public class EmployeeService {
 
             return Optional.ofNullable(responseEntity.getBody())
                     .map(EmployeeListResponse::getData)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "No employees found"));
+                    .orElseThrow(() -> new EmployeeNotFoundException("Not found employees"));
         } catch (RestClientException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error fetching employee list", e);
+            throw new ExternalServiceException("Error to get the employee list", e);
         }
     }
 
@@ -46,9 +46,9 @@ public class EmployeeService {
 
             return Optional.ofNullable(responseEntity.getBody())
                     .map(EmployeeResponse::getData)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
+                    .orElseThrow(() -> new EmployeeNotFoundException("Not found employee"));
         } catch (RestClientException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error fetching employee", e);
+            throw new ExternalServiceException("Error retrieving employee data", e);
         }
     }
 
